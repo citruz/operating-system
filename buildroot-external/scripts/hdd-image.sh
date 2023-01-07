@@ -41,7 +41,7 @@ function create_disk_image() {
     genimage \
       --rootpath "$(path_boot_dir)" \
       --configdump - \
-      --includepath "${BOARD_DIR}:${BR2_EXTERNAL_HASSOS_PATH}/genimage" \
+      --includepath "${BOARD_DIR}:${BOARD_DIR}/..:${BR2_EXTERNAL_HASSOS_PATH}/genimage" \
       --config images-boot.cfg
 
     rm -rf "${GENIMAGE_TMPPATH}"
@@ -49,7 +49,7 @@ function create_disk_image() {
     genimage \
       --rootpath "${ROOTPATH_TMP}" \
       --configdump - \
-      --includepath "${BOARD_DIR}:${BR2_EXTERNAL_HASSOS_PATH}/genimage"
+      --includepath "${BOARD_DIR}:${BOARD_DIR}/..:${BR2_EXTERNAL_HASSOS_PATH}/genimage"
 }
 
 function convert_disk_image_virtual() {

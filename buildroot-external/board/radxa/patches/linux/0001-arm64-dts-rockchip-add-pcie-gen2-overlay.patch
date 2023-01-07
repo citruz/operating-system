@@ -1,0 +1,76 @@
+From 7810c6e309a46d3a5f651a8b46da28c92579e339 Mon Sep 17 00:00:00 2001
+From: Felix Seele <3756270+citruz@users.noreply.github.com>
+Date: Thu, 16 Feb 2023 18:39:00 +0000
+Subject: [PATCH] arm64: dts: rockchip: add pcie gen2 overlay
+
+---
+ arch/arm64/boot/dts/Makefile             |  2 ++
+ arch/arm64/boot/dts/overlays/Makefile    |  8 ++++++++
+ .../dts/overlays/rk3399-pcie-gen2.dtso   | 16 ++++++++++++++++
+ scripts/Makefile.lib                             |  2 +-
+ 5 files changed, 42 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/overlays/Makefile
+ create mode 100644 arch/arm64/boot/dts/overlays/rk3399-pcie-gen2.dtso
+
+diff --git a/arch/arm64/boot/dts/Makefile b/arch/arm64/boot/dts/Makefile
+index 8c15593c0..df6b5576c 100644
+--- a/arch/arm64/boot/dts/Makefile
++++ b/arch/arm64/boot/dts/Makefile
+@@ -33,3 +33,5 @@ subdir-y += tesla
+ subdir-y += ti
+ subdir-y += toshiba
+ subdir-y += xilinx
++
++subdir-y := overlays
+diff --git a/arch/arm64/boot/dts/overlays/Makefile b/arch/arm64/boot/dts/overlays/Makefile
+new file mode 100644
+index 000000000..cc9197d76
+--- /dev/null
++++ b/arch/arm64/boot/dts/overlays/Makefile
+@@ -0,0 +1,8 @@
++# SPDX-License-Identifier: GPL-2.0
++dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
++	rk3399-pcie-gen2.dtbo
++
++targets += $(dtbo-y)
++
++always			:= $(dtbo-y)
++clean-files		:= *.dtbo
+diff --git a/arch/arm64/boot/dts/overlays/rk3399-pcie-gen2.dtso b/arch/arm64/boot/dts/overlays/rk3399-pcie-gen2.dtso
+new file mode 100644
+index 000000000..86c7e9e83
+--- /dev/null
++++ b/arch/arm64/boot/dts/overlays/rk3399-pcie-gen2.dtso
+@@ -0,0 +1,16 @@
++// Enable pcie gen2 mode
++/dts-v1/;
++/plugin/;
++
++/ {
++	model = "ROCK PI 4B";
++	compatible = "rockchip,rockpi","rockchip,rk3399";
++
++	fragment@0 {
++		target = <&pcie0>;
++
++		__overlay__ {
++			max-link-speed = <2>;
++		};
++	};
++};
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 3aa384cec..fcdd2aae6 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -86,7 +86,7 @@ real-dtb-y := $(call real-search, $(dtb-y), .dtb, -dtbs)
+ # Base DTB that overlay is applied onto (each first word of $(*-dtbs) expansion)
+ base-dtb-y := $(foreach m, $(multi-dtb-y), $(firstword $(call suffix-search, $m, .dtb, -dtbs)))
+ 
+-always-y			+= $(dtb-y)
++always-y			+= $(dtb-y) $(dtbo-y)
+ 
+ # Add subdir path
+ 
+-- 
+2.25.1
+
