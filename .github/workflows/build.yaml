@@ -11,6 +11,7 @@ on:
         description: 'List of boards to build (comma separated identifiers)'
         required: false
         type: string
+        default: 'rockpi-4a,rockpi-4a-plus,rockpi-4b,rockpi-4b-plus,rockpi-4c,rock-4c-plus,rock-4se'
 
 env:
   PYTHON_VERSION: "3.10"
@@ -135,7 +136,7 @@ jobs:
     strategy:
       fail-fast: ${{ github.event_name == 'release' }}
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
-    runs-on: ubuntu-22.04
+    runs-on: ha_buildhost
 
     steps:
       - name: Checkout source
@@ -161,108 +162,19 @@ jobs:
         run: |
           sed -i -E "s/(^VERSION_SUFFIX=\").*(\"$)/\1${VERSION_DEV}\2/" buildroot-external/meta
 
-      - name: 'Add release PKI certs'
-        env:
-          RAUC_CERTIFICATE: ${{ secrets.RAUC_CERTIFICATE }}
-          RAUC_PRIVATE_KEY: ${{ secrets.RAUC_PRIVATE_KEY }}
-        run: |
-          echo -e "-----BEGIN CERTIFICATE-----\n${RAUC_CERTIFICATE}\n-----END CERTIFICATE-----" > cert.pem
-          echo -e "-----BEGIN PRIVATE KEY-----\n${RAUC_PRIVATE_KEY}\n-----END PRIVATE KEY-----" > key.pem
-
-      - name: Free space on build drive
-        run: |
-          # Inspired by https://github.com/easimon/maximize-build-space/blob/v7/action.yml
-          sudo rm -rf /usr/local/lib/android/sdk/ndk
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
-          # Make sure cache action can restore this lcoation
-          sudo mkdir /mnt/cache
-          sudo chown -R runner:runner /mnt/cache
-
-      - name: Cache downloads
-        uses: actions/cache/restore@v3
-        with:
-          path: /mnt/cache/dl
-          key: haos-dl
-
-      - name: Cache object files
-        uses: actions/cache/restore@v3
-        with:
-          path: /mnt/cache/cc
-          key: haos-cc-${{ matrix.board.id }}
-
       - name: Build
         run: |
           BUILDER_UID="$(id -u)"
           BUILDER_GID="$(id -g)"
           docker run --rm --privileged -v "${GITHUB_WORKSPACE}:/build" \
             -e BUILDER_UID="${BUILDER_UID}" -e BUILDER_GID="${BUILDER_GID}" \
-            -v "/mnt/cache:/cache" \
+            -v "ha-build-cache:/cache" \
             ${{ needs.prepare.outputs.build_container_image }} \
             make BUILDDIR=/build ${{ matrix.board.defconfig }}
 
-      - name: Upload images
-        if: ${{ github.event_name != 'release' }}
-        uses: burnett01/rsync-deployments@5.2
-        with:
-          rsh: -q
-          switches: -aW
-          path: output/images/haos_*
-          remote_path: ${{ secrets.DEV_TARGET_PATH }}/${{ needs.prepare.outputs.version_full }}/
-          remote_host: ${{ secrets.DEV_HOST }}
-          remote_port: ${{ secrets.DEV_PORT }}
-          remote_user: ${{ secrets.DEV_USERNAME }}
-          remote_key: ${{ secrets.DEV_SSH_KEY }}
-
       - name: Upload artifacts
-        if: ${{ github.event_name != 'release' }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_OS_ARTIFACTS_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_OS_ARTIFACTS_KEY }}
-        run: |
-          aws s3 sync \
-            output/images/ \
-            s3://${{ secrets.R2_OS_ARTIFACTS_BUCKET }}/${{ needs.prepare.outputs.version_full }}/ \
-            --exclude "*" \
-            --include "haos_*" \
-            --endpoint-url ${{ secrets.R2_OS_ARTIFACTS_ENDPOINT }}
-
-      - name: Upload release assets
-        if: ${{ github.event_name == 'release' }}
-        uses: shogo82148/actions-upload-release-asset@v1
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: output/images/haos_*
-
-      - name: Cache downloads
-        uses: actions/cache/save@v3
-        with:
-          path: /mnt/cache/dl
-          key: haos-dl-${{ github.run_id }}
-
-      - name: Cache build
-        uses: actions/cache/save@v3
-        with:
-          path: /mnt/cache/cc
-          key: haos-cc-${{ matrix.board.id }}-${{ github.run_id }}
-
-  bump_version:
-    name: Bump dev channel version
-    if: ${{ github.repository == 'home-assistant/operating-system' }}
-    needs: [ build, prepare ]
-    runs-on: ubuntu-22.04
-
-    steps:
-    - name: Initialize git
-      uses: home-assistant/actions/helpers/git-init@master
-      with:
-        name: ${{ secrets.GIT_NAME }}
-        email: ${{ secrets.GIT_EMAIL }}
-        token: ${{ secrets.GIT_TOKEN }}
-
-    - name: Bump Home Assistant OS ${{ needs.prepare.outputs.channel }} channel version
-      uses: home-assistant/actions/helpers/version-push@master
-      with:
-        key: "hassos[]"
-        key-description: "Home Assistant OS"
-        version: ${{ needs.prepare.outputs.version_full }}
-        channel: ${{ needs.prepare.outputs.channel }}
+          name: haos-image
+          path: output/images/haos_*
+          if-no-files-found: error
