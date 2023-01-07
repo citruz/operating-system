@@ -1,0 +1,32 @@
+From 20e340f5f691878a78c56c5c502beb521b0d54c9 Mon Sep 17 00:00:00 2001
+From: Felix Seele <3756270+citruz@users.noreply.github.com>
+Date: Wed, 24 May 2023 18:41:09 +0000
+Subject: [PATCH] enable tsadc for rock 4c plus
+
+---
+ arch/arm64/boot/dts/rockchip/rk3399-rock-4c-plus.dts | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-4c-plus.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-4c-plus.dts
+index ac36dec33338..b4638638a137 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rock-4c-plus.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-4c-plus.dts
+@@ -601,6 +601,15 @@ &tcphy1 {
+ 	status = "okay";
+ };
+ 
++&tsadc {
++	status = "okay";
++
++	/* tshut mode 0:CRU 1:GPIO */
++	rockchip,hw-tshut-mode = <1>;
++	/* tshut polarity 0:LOW 1:HIGH */
++	rockchip,hw-tshut-polarity = <1>;
++};
++
+ &u2phy0 {
+ 	status = "okay";
+ 
+-- 
+2.34.1
+
