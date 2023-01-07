@@ -1,0 +1,61 @@
+From 206170dc2e05b22531432a997d55056227d3fb9c Mon Sep 17 00:00:00 2001
+From: Felix Seele <3756270+citruz@users.noreply.github.com>
+Date: Fri, 2 Jun 2023 19:40:20 +0000
+Subject: [PATCH] add overlay to disable wifi interrupts
+
+---
+ arch/arm64/boot/dts/overlays/Makefile |  3 ++-
+ .../rk3399-disable-wifi-interrupts.dtso        | 27 +++++++++++++++++++
+ 2 files changed, 29 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/overlays/rk3399-disable-wifi-interrupts.dtso
+
+diff --git a/arch/arm64/boot/dts/overlays/Makefile b/arch/arm64/boot/dts/overlays/Makefile
+index 709ff60dcb06..9ec8f459563e 100644
+--- a/arch/arm64/boot/dts/overlays/Makefile
++++ b/arch/arm64/boot/dts/overlays/Makefile
+@@ -3,7 +3,8 @@ dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
+ 	rk3399-pcie-gen2.dtbo \
+ 	rk3399-rock-4c-plus-disable-hearbeat.dtbo \
+ 	rk3399-rock-4c-plus-disable-power-led.dtbo \
+-	rk3399-rock-pi-4-disable-heartbeat.dtbo
++	rk3399-rock-pi-4-disable-heartbeat.dtbo \
++	rk3399-disable-wifi-interrupts.dtbo
+ 
+ targets += $(dtbo-y)
+ 
+diff --git a/arch/arm64/boot/dts/overlays/rk3399-disable-wifi-interrupts.dtso b/arch/arm64/boot/dts/overlays/rk3399-disable-wifi-interrupts.dtso
+new file mode 100644
+index 000000000000..34005c6c7dc3
+--- /dev/null
++++ b/arch/arm64/boot/dts/overlays/rk3399-disable-wifi-interrupts.dtso
+@@ -0,0 +1,27 @@
++// Disable interrupts to fix driver probing
++// See https://github.com/citruz/haos-rockpi/issues/11
++// and https://lore.kernel.org/linux-arm-kernel/20180930150927.12076-1-hdegoede@redhat.com/
++// [ 3159.432332] brcmfmac: brcmf_sdio_bus_rxctl: resumed on timeout
++// [ 3159.438890] ieee80211 phy0: brcmf_bus_started: failed: -110
++// [ 3159.445174] ieee80211 phy0: brcmf_attach: dongle is not responding: err=-110
++// [ 3159.470572] brcmfmac: brcmf_sdio_firmware_callback: brcmf_attach failed
++//
++// Because it is not possible to _remove_ attributes in an overlay, we set
++// interrupts and interrupt-names to an empty value. This will result in another
++// error "brcmfmac: brcmf_of_probe: interrupt could not be mapped" which can be ignored.
++/dts-v1/;
++/plugin/;
++
++/ {
++	model = "ROCK PI";
++	compatible = "rockchip,rockpi","rockchip,rk3399";
++
++	fragment@0 {
++		target = <&brcmf>;
++
++		__overlay__ {
++			interrupts;
++			interrupt-names;
++		};
++	};
++};
+-- 
+2.34.1
+
