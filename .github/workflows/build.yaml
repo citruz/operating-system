@@ -11,6 +11,7 @@ on:
         description: 'List of boards to build (comma separated identifiers)'
         required: false
         type: string
+        default: 'rockpi-4a,rockpi-4a-plus,rockpi-4b,rockpi-4b-plus,rockpi-4c,rock-4c-plus,rock-4se'
 
 env:
   PYTHON_VERSION: "3.10"
@@ -135,7 +136,7 @@ jobs:
     strategy:
       fail-fast: ${{ github.event_name == 'release' }}
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
-    runs-on: ubuntu-22.04
+    runs-on: ha_buildhost
 
     steps:
       - name: Checkout source
@@ -161,143 +162,19 @@ jobs:
         run: |
           sed -i -E "s/(^VERSION_SUFFIX=\").*(\"$)/\1${VERSION_DEV}\2/" buildroot-external/meta
 
-      - name: 'Add release PKI certs'
-        env:
-          RAUC_CERTIFICATE: ${{ secrets.RAUC_CERTIFICATE }}
-          RAUC_PRIVATE_KEY: ${{ secrets.RAUC_PRIVATE_KEY }}
-        run: |
-          echo -e "-----BEGIN CERTIFICATE-----\n${RAUC_CERTIFICATE}\n-----END CERTIFICATE-----" > cert.pem
-          echo -e "-----BEGIN PRIVATE KEY-----\n${RAUC_PRIVATE_KEY}\n-----END PRIVATE KEY-----" > key.pem
-
-      - name: Free space on build drive
-        run: |
-          # Inspired by https://github.com/easimon/maximize-build-space/blob/v7/action.yml
-          sudo rm -rf /usr/local/lib/android/sdk/ndk
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
-          # Make sure cache action can restore this lcoation
-          sudo mkdir /mnt/cache
-          sudo chown -R runner:runner /mnt/cache
-
-      - name: "Restore cache: object files"
-        uses: actions/cache/restore@v3
-        with:
-          path: /mnt/cache/cc
-          key: haos-cc-${{ matrix.board.id }}
-
       - name: Build
         run: |
           BUILDER_UID="$(id -u)"
           BUILDER_GID="$(id -g)"
           docker run --rm --privileged -v "${GITHUB_WORKSPACE}:/build" \
             -e BUILDER_UID="${BUILDER_UID}" -e BUILDER_GID="${BUILDER_GID}" \
-            -v "/mnt/cache:/cache" \
+            -v "ha-build-cache:/cache" \
             ${{ needs.prepare.outputs.build_container_image }} \
             make BUILDDIR=/build ${{ matrix.board.defconfig }}
 
       - name: Upload artifacts
-        if: ${{ github.event_name != 'release' }}
-        working-directory: output/images/
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_OS_ARTIFACTS_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_OS_ARTIFACTS_KEY }}
-        run: |
-          aws s3 sync \
-            ./ \
-            s3://${{ secrets.R2_OS_ARTIFACTS_BUCKET }}/${{ needs.prepare.outputs.version_full }}/ \
-            --exclude "*" \
-            --include "haos_*" \
-            --endpoint-url ${{ secrets.R2_OS_ARTIFACTS_ENDPOINT }}
-
-      - name: Upload release assets
-        if: ${{ github.event_name == 'release' }}
-        uses: shogo82148/actions-upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: output/images/haos_*
-
-      - name: Print cache stats
-        run: |
-          echo "Cache size: $(du -sh /mnt/cache/cc)"
-          echo "Files total: $(find /mnt/cache/cc -mindepth 1 -type f | wc -l)"
-          echo "Old files to remove: $(find /mnt/cache/cc -mindepth 1 -type f -not -anewer output/Makefile | wc -l)"
-          find /mnt/cache/cc -mindepth 1 -type f -not -anewer output/Makefile -delete
-          echo "Cache size after pruning: $(du -sh /mnt/cache/cc)"
-
-      - name: "Save cache: object files"
-        if: github.ref == 'refs/heads/dev'
-        uses: actions/cache/save@v3
-        with:
-          path: /mnt/cache/cc
-          key: haos-cc-${{ matrix.board.id }}-${{ github.run_id }}
-
-      - name: Upload ova image to artifacts for test job
         uses: actions/upload-artifact@v3
-        if: ${{ matrix.board.id == 'ova' }}
         with:
-          name: ova-image
-          path: |
-            output/images/haos_ova*.qcow2.xz
-
-  test:
-    name: Test OS image
-    needs: [ build, prepare ]
-    uses: ./.github/workflows/test.yaml
-
-  update_index:
-    name: Update artifacts index
-    if: ${{ github.event_name != 'release' }}
-    needs: [ build, prepare ]
-    uses: home-assistant/operating-system/.github/workflows/artifacts-index.yaml@dev
-    with:
-      version: ${{ needs.prepare.outputs.version_full }}
-    secrets:
-      R2_OS_ARTIFACTS_ID: ${{ secrets.R2_OS_ARTIFACTS_ID }}
-      R2_OS_ARTIFACTS_KEY: ${{ secrets.R2_OS_ARTIFACTS_KEY }}
-      R2_OS_ARTIFACTS_BUCKET: ${{ secrets.R2_OS_ARTIFACTS_BUCKET }}
-      R2_OS_ARTIFACTS_ENDPOINT: ${{ secrets.R2_OS_ARTIFACTS_ENDPOINT }}
-      CF_ZONE: ${{ secrets.CF_ZONE }}
-      CF_PURGE_TOKEN: ${{ secrets.CF_PURGE_TOKEN }}
-
-  bump_version:
-    name: Bump ${{ needs.prepare.outputs.channel }} channel version
-    if: ${{ github.repository == 'home-assistant/operating-system' }}
-    environment: ${{ needs.prepare.outputs.channel }}
-    needs: [ build, prepare ]
-    runs-on: ubuntu-22.04
-
-    steps:
-    - name: Checkout source
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-
-    - name: Initialize git
-      uses: home-assistant/actions/helpers/git-init@master
-      with:
-        name: ${{ secrets.GIT_NAME }}
-        email: ${{ secrets.GIT_EMAIL }}
-        token: ${{ secrets.GIT_TOKEN }}
-
-    - name: Bump Home Assistant OS ${{ needs.prepare.outputs.channel }} channel version
-      uses: home-assistant/actions/helpers/version-push@master
-      with:
-        key: "hassos[]"
-        key-description: "Home Assistant OS"
-        version: ${{ needs.prepare.outputs.version_full }}
-        channel: ${{ needs.prepare.outputs.channel }}
-
-    - name: Bump Home Assistant OS beta channel version on stable release
-      if: ${{ needs.prepare.outputs.channel == 'stable' }}
-      uses: home-assistant/actions/helpers/version-push@master
-      with:
-        key: "hassos[]"
-        key-description: "Home Assistant OS"
-        version: ${{ needs.prepare.outputs.version_full }}
-        channel: beta
-
-    - name: Bump stable Home Assistant version for RPi Imager
-      if: ${{ github.event_name == 'release' && needs.prepare.outputs.channel == 'stable' }}
-      uses: "./.github/actions/bump-rpi-imager-version"
-      with:
-        version: ${{ needs.prepare.outputs.version_full }}
-        release-date: ${{ github.event.release.published_at }}
+          name: haos-image
+          path: output/images/haos_*
+          if-no-files-found: error
