@@ -1,0 +1,10 @@
+# Modify this to enable dt overlays (see README for further information)
+# Available overlays:
+# - rk3399-pcie-gen2: Enable PCIe Gen2 speed for SSD
+# - rk3399-rock-pi-4-disable-heartbeat: Disable heartbeat led (blue)
+# Multiple overlays must be separated by a space. For example:
+# overlays=rk3399-pcie-gen2 rk3399-rock-pi-4-disable-heartbeat
+overlays=
+
+# Select device tree (DO NOT MODIFY)
+fdtfile=rk3399-rock-pi-4b-plus.dtb
