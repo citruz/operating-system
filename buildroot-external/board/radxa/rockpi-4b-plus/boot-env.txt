@@ -1,0 +1,2 @@
+# Select device tree (DO NOT MODIFY)
+fdtfile=rk3399-rock-pi-4b-plus.dtb
