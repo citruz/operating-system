@@ -1,4 +1,4 @@
 # Select device tree (DO NOT MODIFY)
-fdtfile=rk3399-rock-pi-4b-plus.dtb
+fdtfile=rk3399-rock-pi-4b.dtb
 # Uncomment this to enable GPIO support for RPI-RF-MOD/HM-MOD-RPI-PCB
 #overlays=rpi-rf-mod

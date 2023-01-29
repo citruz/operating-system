@@ -7,7 +7,7 @@ function hassos_pre_image() {
 
     cp -t "${BOOT_DATA}" \
         "${BINARIES_DIR}/boot.scr" \
-        "${BINARIES_DIR}/rk3399-rock-pi-4b-plus.dtb"
+        "${BINARIES_DIR}/"*.dtb
 
     cp "${BOARD_DIR}/boot-env.txt" "${BOOT_DATA}/haos-config.txt"
 

@@ -1,5 +1,11 @@
 [
   {
+    "id": "rockpi-4b",
+    "defconfig": "rockpi_4b",
+    "runner": "x64_runner",
+    "label": "board/rockpi-4b"
+  },
+  {
     "id": "rockpi-4b-plus",
     "defconfig": "rockpi_4b_plus",
     "runner": "x64_runner",
