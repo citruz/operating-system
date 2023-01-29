@@ -1,6 +1,17 @@
 # Home Assistant OS for Rock Pi 4B+
 
-This is an unofficial fork of the awesome [Home Assistant Operating System](https://github.com/home-assistant/operating-system) which adds support for the Rock Pi 4B+ board.
+This is an unofficial fork of the awesome [Home Assistant Operating System](https://github.com/home-assistant/operating-system) which adds support for the Rock Pi 4 board family.
+
+## Supported boards
+
+This is build is developed and tested mainly on the Rock Pi 4B+. However, users have reported that it also works on other boards which use very similar hardware:
+
+- Rock Pi 4SE
+- OKdo Rock 4C+
+
+It might also work on other boards of the Rock Pi 4 family. Please try flashing it first before opening an issue. If it works, let me know so that I can add the board to the list.
+
+You have a different Rock Pi board and would like to run Home Assistant on it? Please open an issue to get in contact.
 
 ## Installation
 
@@ -24,7 +35,3 @@ The serial baud rate is set to 1500000 as it is the default for the Rock Pi. If 
 
 - NVMe
 - Analog Audio
-
-## Other boards
-
-You have a different Rock Pi board and would like to run Home Assistant on it? Please open an issue to get in contact.
