@@ -15,7 +15,7 @@ You have a different Rock Pi board and would like to run Home Assistant on it? P
 
 ## Installation
 
-Download the latest version from the [Releases](https://github.com/citruz/haos-rockpi/releases) page and flash it to your SD card or eMMC.
+Download the latest version from the [Releases](https://github.com/citruz/haos-rockpi/releases) page, extract the image and flash it to your SD card or eMMC.
 
 No further configuration should be required.
 
