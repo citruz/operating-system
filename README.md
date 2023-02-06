@@ -6,8 +6,9 @@ This is an unofficial fork of the awesome [Home Assistant Operating System](http
 
 This is build is developed and tested mainly on the Rock Pi 4B+. However, users have reported that it also works on other boards which use very similar hardware:
 
+- Rock Pi 4B
 - Rock Pi 4SE
-- OKdo Rock 4C+
+- Rock Pi 4C+/OKdo Rock 4C+
 
 It might also work on other boards of the Rock Pi 4 family. Please try flashing it first before opening an issue. If it works, let me know so that I can add the board to the list.
 
