@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cpio \
         file \
         git \
+        golang-go \
         graphviz \
         jq \
         make \
