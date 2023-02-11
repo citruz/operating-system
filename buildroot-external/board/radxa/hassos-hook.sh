@@ -11,7 +11,7 @@ function hassos_pre_image() {
 
     cp "${BOARD_DIR}/boot-env.txt" "${BOOT_DATA}/haos-config.txt"
 
-    echo "earlycon=uart8250,mmio32,0xff1a0000 console=ttyS2,1500000n8" > "${BOOT_DATA}/cmdline.txt"
+    echo "earlycon=uart8250,mmio32,0xff1a0000 console=ttyS2,115200n8" > "${BOOT_DATA}/cmdline.txt"
 
     # SPL
     create_spl_image
