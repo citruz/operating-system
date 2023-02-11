@@ -1,8 +1,38 @@
 [
   {
+    "id": "rockpi-4a",
+    "defconfig": "rockpi_4a",
+    "runner": "x64_runner",
+    "label": "board/rockpi-4a"
+  },
+  {
+    "id": "rockpi-4a-plus",
+    "defconfig": "rockpi_4a_plus",
+    "runner": "x64_runner",
+    "label": "board/rockpi-4a-plus"
+  },
+  {
+    "id": "rockpi-4b",
+    "defconfig": "rockpi_4b",
+    "runner": "x64_runner",
+    "label": "board/rockpi-4b"
+  },
+  {
     "id": "rockpi-4b-plus",
     "defconfig": "rockpi_4b_plus",
     "runner": "x64_runner",
     "label": "board/rockpi-4b-plus"
+  },
+  {
+    "id": "rockpi-4c",
+    "defconfig": "rockpi_4c",
+    "runner": "x64_runner",
+    "label": "board/rockpi-4c"
+  },
+  {
+    "id": "rock-4c-plus",
+    "defconfig": "rock_4c_plus",
+    "runner": "x64_runner",
+    "label": "board/rock-4c-plus"
   }
 ]
