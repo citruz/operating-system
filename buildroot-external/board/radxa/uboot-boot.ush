@@ -33,7 +33,7 @@ fi
 fileenv ${devtype} ${devnum}:1 ${ramdisk_addr_r} cmdline.txt cmdline
 
 # Load device tree
-setenv fdtfile "rk3399-rock-pi-4b-plus.dtb"
+# fdtfile variable is read from haos-config.txt
 
 echo "Loading standard device tree ${fdtfile}"
 fatload ${devtype} ${devnum}:1 ${fdt_addr_r} ${fdtfile}
