@@ -34,5 +34,11 @@
     "defconfig": "rock_4c_plus",
     "runner": "x64_runner",
     "label": "board/rock-4c-plus"
+  },
+  {
+    "id": "rock-4se",
+    "defconfig": "rock_4se",
+    "runner": "x64_runner",
+    "label": "board/rock-4se"
   }
 ]
