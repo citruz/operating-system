@@ -1,18 +1,16 @@
-# Home Assistant OS for Rock Pi 4B+
+# Home Assistant OS for Rock Pi 4
 
 This is an unofficial fork of the awesome [Home Assistant Operating System](https://github.com/home-assistant/operating-system) which adds support for the Rock Pi 4 board family.
 
 ## Supported boards
 
-This is build is developed and tested mainly on the Rock Pi 4B+. However, users have reported that it also works on other boards which use very similar hardware:
+- Rock Pi 4A/4A+
+- Rock Pi 4B/4B+
+- Rock Pi 4C
+- Rock 4C+/OKdo Rock 4C+
+- Rock 4SE
 
-- Rock Pi 4B
-- Rock Pi 4SE
-- Rock Pi 4C+/OKdo Rock 4C+
-
-It might also work on other boards of the Rock Pi 4 family. Please try flashing it first before opening an issue. If it works, let me know so that I can add the board to the list.
-
-You have a different Rock Pi board and would like to run Home Assistant on it? Please open an issue to get in contact.
+This build is developed and tested mainly on the Rock Pi 4B+. I am relying on users to test and verify the images on other boards. If you encounter any issues or have a different Rock Pi board which you would like to be supported, please open an issue to get in contact.
 
 ## Installation
 
@@ -20,9 +18,9 @@ Download the latest version from the [Releases](https://github.com/citruz/haos-r
 
 No further configuration should be required.
 
-### Serial configuration
+### Serial output
 
-The serial baud rate is set to 1500000 as it is the default for the Rock Pi. If your serial interface cannot handle that speed, you can modify the kernel commandline to change it. To do this, mount the first partition of the image (fat) and modify `commandline.txt`.
+Contrary to other images for the Rock Pi, the serial baudrate is set to 115200 by default to achieve better compatibility. You can modify the kernel commandline to change the baudrate. Mount the first partition of the image (fat) and edit `commandline.txt`. This can also be done from the booted OS itself by modifying `/mnt/boot/commandline.txt`.
 
 ## Boot from NMVe SSD
 
@@ -59,7 +57,13 @@ With this setup you always need to have an SD card inserted from which the board
 1. Insert SD card into board and boot
 1. There might be some error messages like `find_valid_gpt: *** ERROR: Invalid GPT ***`. These are expected because U-Boot will attempt to find the boot partition on SD card first (it's not there). It should then recognize the NVMe SSD and boot from it.
 
-## What is supported
+## Automatic updates
+
+Since this is an unofficial fork of Homeassistant OS, the OS image cannot be updated over the air (supervisor, core and all other components can be updated just fine). You will need to reflash for each release.
+
+However, HA's built-in backup and restore functionality works great so there should be no dataloss. Make sure to create a "Full Backup" and download it before flashing a new image.
+
+## Hardware support
 
 ### Working hardware
 
