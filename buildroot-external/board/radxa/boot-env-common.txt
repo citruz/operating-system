@@ -1,0 +1,3 @@
+# Uncomment this to enable dt overlays (see README)
+#overlays=rk3399-pcie-gen2,rk3399-usb-otg
+

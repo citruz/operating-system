@@ -7,9 +7,16 @@ function hassos_pre_image() {
 
     cp -t "${BOOT_DATA}" \
         "${BINARIES_DIR}/boot.scr" \
-        "${BINARIES_DIR}/"*.dtb
+        "${BINARIES_DIR}/rockchip/"*.dtb
 
-    cp "${BOARD_DIR}/boot-env.txt" "${BOOT_DATA}/haos-config.txt"
+    mkdir -p "${BOOT_DATA}/overlays"
+    # replace .dtb extension with .dtbo
+    for file in "${BINARIES_DIR}/rockchip/overlay/"*.dtb; do
+        cp "$file" "${BOOT_DATA}/overlays/$(basename -- "$file" .dtb).dtbo"
+    done
+
+    cp "${BOARD_DIR}/../boot-env-common.txt" "${BOOT_DATA}/haos-config.txt"
+    cat "${BOARD_DIR}/boot-env.txt" >> "${BOOT_DATA}/haos-config.txt"
 
     echo "earlycon=uart8250,mmio32,0xff1a0000 console=ttyS2,115200n8" > "${BOOT_DATA}/cmdline.txt"
 
