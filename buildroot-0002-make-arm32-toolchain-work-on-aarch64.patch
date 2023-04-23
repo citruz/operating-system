@@ -1,0 +1,48 @@
+From 419204353a998ae5bafb9e8bf49a429c7e524448 Mon Sep 17 00:00:00 2001
+From: Felix Seele <3756270+citruz@users.noreply.github.com>
+Date: Sat, 11 Feb 2023 15:23:12 +0000
+Subject: [PATCH 2/2] make arm32 toolchain work on aarch64
+
+---
+ boot/arm-trusted-firmware/Config.in                  | 2 +-
+ package/arm-gnu-toolchain/arm-gnu-toolchain.hash | 1 +
+ package/arm-gnu-toolchain/arm-gnu-toolchain.mk   | 2 +-
+ 3 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/boot/arm-trusted-firmware/Config.in b/boot/arm-trusted-firmware/Config.in
+index ee009ceb57..06e8e30547 100644
+--- a/boot/arm-trusted-firmware/Config.in
++++ b/boot/arm-trusted-firmware/Config.in
+@@ -192,7 +192,7 @@ config BR2_TARGET_ARM_TRUSTED_FIRMWARE_NEEDS_DTC
+ config BR2_TARGET_ARM_TRUSTED_FIRMWARE_NEEDS_ARM32_TOOLCHAIN
+ 	bool "Needs arm-none-eabi toolchain"
+ 	depends on BR2_aarch64
+-	depends on BR2_HOSTARCH = "x86_64"
++	depends on BR2_HOSTARCH = "aarch64"
+ 	help
+ 	  Select this option if your ATF board configuration requires
+ 	  an ARM32 bare metal toolchain to be available.
+diff --git a/package/arm-gnu-toolchain/arm-gnu-toolchain.hash b/package/arm-gnu-toolchain/arm-gnu-toolchain.hash
+index f3a89cd0a8..30b75af6e6 100644
+--- a/package/arm-gnu-toolchain/arm-gnu-toolchain.hash
++++ b/package/arm-gnu-toolchain/arm-gnu-toolchain.hash
+@@ -1,2 +1,3 @@
+ # Locally calculated
+ sha256  97dbb4f019ad1650b732faffcc881689cedc14e2b7ee863d390e0a41ef16c9a3  gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
++sha256  f605b5f23ca898e9b8b665be208510a54a6e9fdd0fa5bfc9592002f6e7431208  gcc-arm-none-eabi-10.3-2021.10-aarch64-linux.tar.bz2
+diff --git a/package/arm-gnu-toolchain/arm-gnu-toolchain.mk b/package/arm-gnu-toolchain/arm-gnu-toolchain.mk
+index 97ab89c9eb..dec93750c3 100644
+--- a/package/arm-gnu-toolchain/arm-gnu-toolchain.mk
++++ b/package/arm-gnu-toolchain/arm-gnu-toolchain.mk
+@@ -6,7 +6,7 @@
+
+ ARM_GNU_TOOLCHAIN_VERSION = 10.3-2021.10
+ ARM_GNU_TOOLCHAIN_SITE = https://developer.arm.com/-/media/Files/downloads/gnu-rm/$(ARM_GNU_TOOLCHAIN_VERSION)
+-ARM_GNU_TOOLCHAIN_SOURCE = gcc-arm-none-eabi-$(ARM_GNU_TOOLCHAIN_VERSION)-x86_64-linux.tar.bz2
++ARM_GNU_TOOLCHAIN_SOURCE = gcc-arm-none-eabi-$(ARM_GNU_TOOLCHAIN_VERSION)-aarch64-linux.tar.bz2
+ ARM_GNU_TOOLCHAIN_LICENSE = GPL-3.0+
+
+ HOST_ARM_GNU_TOOLCHAIN_INSTALL_DIR = $(HOST_DIR)/opt/gcc-arm-none-eabi
+-- 
+2.25.1
+
