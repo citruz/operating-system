@@ -1,0 +1,35 @@
+From 3b009c8e03fdd83bc95994bc7dbfea5e849e8710 Mon Sep 17 00:00:00 2001
+From: Felix Seele <3756270+citruz@users.noreply.github.com>
+Date: Sun, 23 Apr 2023 14:28:25 +0000
+Subject: [PATCH] use host go compiler
+
+---
+ Dockerfile                                       | 1 +
+ buildroot-external/package/tempio/Config.in.host | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Dockerfile b/Dockerfile
+index 150605f20..86cf10f4d 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
+         cpio \
+         file \
+         git \
++        golang-go \
+         graphviz \
+         jq \
+         make \
+diff --git a/buildroot-external/package/tempio/Config.in.host b/buildroot-external/package/tempio/Config.in.host
+index a212eb3c4..4bbdf78c5 100644
+--- a/buildroot-external/package/tempio/Config.in.host
++++ b/buildroot-external/package/tempio/Config.in.host
+@@ -1,5 +1,4 @@
+ config BR2_PACKAGE_HOST_TEMPIO
+ 	bool "Home Assistant tempio"
+-	depends on BR2_PACKAGE_HOST_GO_HOST_ARCH_SUPPORTS
+ 	help
+ 	  Install Home Assistant template helper.
+-- 
+2.34.1
+
