@@ -1,0 +1,66 @@
+From 3e02b123fb45fc70f64e381dd3315aba7be6ea49 Mon Sep 17 00:00:00 2001
+From: Felix Seele <3756270+citruz@users.noreply.github.com>
+Date: Tue, 31 Jan 2023 22:26:14 +0000
+Subject: [PATCH 1/2] use host go compiler
+
+---
+ package/go-bootstrap/go-bootstrap.mk | 8 ++++++++
+ package/go/Config.in.host            | 2 --
+ package/go/go.mk                     | 4 ++++
+ 3 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/package/go-bootstrap/go-bootstrap.mk b/package/go-bootstrap/go-bootstrap.mk
+index 71696a1540..714c696da3 100644
+--- a/package/go-bootstrap/go-bootstrap.mk
++++ b/package/go-bootstrap/go-bootstrap.mk
+@@ -19,6 +19,14 @@ GO_BOOTSTRAP_LICENSE_FILES = LICENSE
+ # host-go-bootstrap.
+ HOST_GO_BOOTSTRAP_DEPENDENCIES = toolchain
+ 
++# If we do not support this architecture with go-bootstrap, depend on the host
++# Go compiler to bootstrap the host-go compiler instead.
++ifeq ($(BR2_PACKAGE_HOST_GO_BOOTSTRAP_ARCH_SUPPORTS),y)
++HOST_GO_BOOTSTRAP_ROOT = $(HOST_DIR)/lib/go-$(GO_BOOTSTRAP_VERSION)
++else
++HOST_GO_BOOTSTRAP_ROOT = /usr/lib/go
++endif
++
+ HOST_GO_BOOTSTRAP_ROOT = $(HOST_DIR)/lib/go-$(GO_BOOTSTRAP_VERSION)
+ 
+ # The go build system is not compatable with ccache, so use HOSTCC_NOCCACHE
+diff --git a/package/go/Config.in.host b/package/go/Config.in.host
+index ded02d3b3a..91869a1cda 100644
+--- a/package/go/Config.in.host
++++ b/package/go/Config.in.host
+@@ -2,7 +2,6 @@
+ config BR2_PACKAGE_HOST_GO_TARGET_ARCH_SUPPORTS
+ 	bool
+ 	default y
+-	depends on BR2_PACKAGE_HOST_GO_BOOTSTRAP_ARCH_SUPPORTS
+ 	depends on (BR2_arm && BR2_TOOLCHAIN_SUPPORTS_PIE) || BR2_aarch64 \
+ 		|| BR2_i386 || BR2_x86_64 || BR2_powerpc64le \
+ 		|| BR2_mips64 || BR2_mips64el || BR2_riscv || BR2_s390x
+@@ -28,4 +27,3 @@ config BR2_PACKAGE_HOST_GO_TARGET_CGO_LINKING_SUPPORTS
+ config BR2_PACKAGE_HOST_GO_HOST_ARCH_SUPPORTS
+ 	bool
+ 	default y
+-	depends on BR2_PACKAGE_HOST_GO_BOOTSTRAP_ARCH_SUPPORTS
+diff --git a/package/go/go.mk b/package/go/go.mk
+index 84c6582afd..585f725ea7 100644
+--- a/package/go/go.mk
++++ b/package/go/go.mk
+@@ -12,7 +12,11 @@ GO_LICENSE = BSD-3-Clause
+ GO_LICENSE_FILES = LICENSE
+ GO_CPE_ID_VENDOR = golang
+ 
++# Depend on the host Go compiler if go-bootstrap is not available.
++ifeq ($(BR2_PACKAGE_HOST_GO_BOOTSTRAP_ARCH_SUPPORTS),y)
+ HOST_GO_DEPENDENCIES = host-go-bootstrap
++endif
++
+ HOST_GO_GOPATH = $(HOST_DIR)/share/go-path
+ HOST_GO_HOST_CACHE = $(HOST_DIR)/share/host-go-cache
+ HOST_GO_ROOT = $(HOST_DIR)/lib/go
+-- 
+2.25.1
+
