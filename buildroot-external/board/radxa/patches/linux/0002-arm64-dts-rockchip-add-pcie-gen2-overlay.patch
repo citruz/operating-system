@@ -52,7 +52,7 @@ index 000000000..86c7e9e83
 +
 +	fragment@0 {
 +		target = <&pcie0>;
-+		
++
 +		__overlay__ {
 +			max-link-speed = <2>;
 +		};
