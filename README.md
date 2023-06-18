@@ -29,6 +29,7 @@ A few device tree overlays are supplied with the image to customize the behavior
 - rk3399-disable-wifi-interrupts: The upgrade to Linux 6.1 caused problems on some boards where the wifi chipset would not be initialized correctly. This overlay disables out-of-bounds interrupts for the chipset which fixes the problem. Because it has no known downsides, it is activated by default on all boards.
 - rk3399-pcie-gen2: Enable PCIe Gen2 speed.
 - rk3399-rock-pi-4-disable-heartbeat: Disable the blue heartbeat led (except Rock 4C+).
+- rk3399-pwm-gpio: Enable the PWM pins (11 and 13). Controllable through `/sys/class/pwm/pwmchip[0,1]/`.
 
 Only for Rock 4C+:
 - rk3399-rock-4c-plus-disable-hearbeat: Disable the blue heartbeat led.
