@@ -40,5 +40,11 @@
     "defconfig": "rock_4se",
     "architecture": "aarch64",
     "label": "board/rock-4se"
+  },
+  {
+    "id": "rockpro64",
+    "defconfig": "rockpro64",
+    "architecture": "aarch64",
+    "label": "board/rockpro64"
   }
 ]
