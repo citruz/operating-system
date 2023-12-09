@@ -40,5 +40,11 @@
     "defconfig": "rock_4se",
     "architecture": "aarch64",
     "label": "board/rock-4se"
+  },
+  {
+    "id": "nanopi-m4",
+    "defconfig": "nanopi_m4",
+    "architecture": "aarch64",
+    "label": "board/nanopi-m4"
   }
 ]

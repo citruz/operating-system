@@ -11,7 +11,7 @@ on:
         description: 'List of boards to build (comma separated identifiers)'
         required: false
         type: string
-        default: 'rockpi-4a,rockpi-4a-plus,rockpi-4b,rockpi-4b-plus,rockpi-4c,rock-4c-plus,rock-4se'
+        default: 'rockpi-4a,rockpi-4a-plus,rockpi-4b,rockpi-4b-plus,rockpi-4c,rock-4c-plus,rock-4se,nanopi-m4'
 
 env:
   PYTHON_VERSION: "3.10"
