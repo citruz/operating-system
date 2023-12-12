@@ -1,4 +1,4 @@
 overlays=
 
 # Select device tree (DO NOT MODIFY)
-fdtfile=rk3399-nanopi-m4.dtb
+fdtfile=rk3399-nanopi-m4v2.dtb

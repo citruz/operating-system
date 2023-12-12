@@ -46,5 +46,11 @@
     "defconfig": "nanopi_m4",
     "architecture": "aarch64",
     "label": "board/nanopi-m4"
+  },
+  {
+    "id": "nanopi-m4v2",
+    "defconfig": "nanopi_m4v2",
+    "architecture": "aarch64",
+    "label": "board/nanopi-m4v2"
   }
 ]
