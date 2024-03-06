@@ -208,6 +208,7 @@ jobs:
           BUILDER_GID="$(id -g)"
           docker run --rm --privileged \
             -e BUILDER_UID="${BUILDER_UID}" -e BUILDER_GID="${BUILDER_GID}" \
+            -v "${GITHUB_WORKSPACE}:/build" \
             -v "ha-build-cache:/cache" \
             ${{ needs.prepare.outputs.build_container_image }} \
             make BUILDDIR=/build ${{ matrix.board.defconfig }}
@@ -217,8 +218,7 @@ jobs:
           docker run --rm --privileged \
             -e BUILDER_UID="$(id -u)" -e BUILDER_GID="$(id -g)" \
             -v "${GITHUB_WORKSPACE}:/build" \
-            -v "/mnt/cache:/cache" \
-            -v "/mnt/output:/build/output" \
+            -v "ha-build-cache:/cache" \
             ${{ needs.prepare.outputs.build_container_image }} \
             make -C buildroot O="/build/output" BR2_EXTERNAL="/build/buildroot-external" \
             BR2_CHECK_DOTCONFIG_OPTS="--github-format --strip-path-prefix=/build/" linux-check-dotconfig
