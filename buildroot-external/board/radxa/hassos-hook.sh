@@ -23,8 +23,7 @@ function hassos_pre_image() {
     # SPL
     create_spl_image
 
-    dd if="${BINARIES_DIR}/idbloader.img" of="${SPL_IMG}" conv=notrunc bs=512 seek=64  # 0x8000
-    dd if="${BINARIES_DIR}/u-boot.itb" of="${SPL_IMG}" conv=notrunc bs=512 seek=8192  # 0x400000
+    dd if="${BINARIES_DIR}/u-boot-rockchip.bin" of="${SPL_IMG}" conv=notrunc bs=512 seek=64  # 0x8000
 }
 
 
