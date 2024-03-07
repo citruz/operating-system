@@ -5,9 +5,9 @@ Subject: [PATCH] add overlay to disable wifi interrupts
 
 ---
  arch/arm64/boot/dts/rockchip/overlay/Makefile |  3 ++-
- .../rk3399-disable-wifi-interrupts.dts        | 27 +++++++++++++++++++
+ .../rk3399-disable-wifi-interrupts.dtso        | 27 +++++++++++++++++++
  2 files changed, 29 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/boot/dts/rockchip/overlay/rk3399-disable-wifi-interrupts.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/overlay/rk3399-disable-wifi-interrupts.dtso
 
 diff --git a/arch/arm64/boot/dts/rockchip/overlay/Makefile b/arch/arm64/boot/dts/rockchip/overlay/Makefile
 index 709ff60dcb06..9ec8f459563e 100644
@@ -23,11 +23,11 @@ index 709ff60dcb06..9ec8f459563e 100644
  
  targets += $(dtbo-y)
  
-diff --git a/arch/arm64/boot/dts/rockchip/overlay/rk3399-disable-wifi-interrupts.dts b/arch/arm64/boot/dts/rockchip/overlay/rk3399-disable-wifi-interrupts.dts
+diff --git a/arch/arm64/boot/dts/rockchip/overlay/rk3399-disable-wifi-interrupts.dtso b/arch/arm64/boot/dts/rockchip/overlay/rk3399-disable-wifi-interrupts.dtso
 new file mode 100644
 index 000000000000..34005c6c7dc3
 --- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/overlay/rk3399-disable-wifi-interrupts.dts
++++ b/arch/arm64/boot/dts/rockchip/overlay/rk3399-disable-wifi-interrupts.dtso
 @@ -0,0 +1,27 @@
 +// Disable interrupts to fix driver probing
 +// See https://github.com/citruz/haos-rockpi/issues/11
