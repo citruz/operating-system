@@ -4,29 +4,29 @@ Date: Thu, 16 Feb 2023 18:39:00 +0000
 Subject: [PATCH] arm64: dts: rockchip: add pcie gen2 overlay
 
 ---
- arch/arm64/boot/dts/rockchip/Makefile            |  2 ++
- arch/arm64/boot/dts/rockchip/overlay/Makefile    |  8 ++++++++
- .../dts/rockchip/overlay/rk3399-pcie-gen2.dtso   | 16 ++++++++++++++++
+ arch/arm64/boot/dts/Makefile             |  2 ++
+ arch/arm64/boot/dts/overlays/Makefile    |  8 ++++++++
+ .../dts/overlays/rk3399-pcie-gen2.dtso   | 16 ++++++++++++++++
  scripts/Makefile.lib                             |  2 +-
  5 files changed, 42 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm64/boot/dts/rockchip/overlay/Makefile
- create mode 100644 arch/arm64/boot/dts/rockchip/overlay/rk3399-pcie-gen2.dtso
+ create mode 100644 arch/arm64/boot/dts/overlays/Makefile
+ create mode 100644 arch/arm64/boot/dts/overlays/rk3399-pcie-gen2.dtso
 
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+diff --git a/arch/arm64/boot/dts/Makefile b/arch/arm64/boot/dts/Makefile
 index 8c15593c0..df6b5576c 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -105,3 +105,5 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-rock-5b.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-indiedroid-nova.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-khadas-edge2.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-rock-5a.dtb
+--- a/arch/arm64/boot/dts/Makefile
++++ b/arch/arm64/boot/dts/Makefile
+@@ -33,3 +33,5 @@ subdir-y += tesla
+ subdir-y += ti
+ subdir-y += toshiba
+ subdir-y += xilinx
 +
-+subdir-y := overlay
-diff --git a/arch/arm64/boot/dts/rockchip/overlay/Makefile b/arch/arm64/boot/dts/rockchip/overlay/Makefile
++subdir-y := overlays
+diff --git a/arch/arm64/boot/dts/overlays/Makefile b/arch/arm64/boot/dts/overlays/Makefile
 new file mode 100644
 index 000000000..cc9197d76
 --- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/overlay/Makefile
++++ b/arch/arm64/boot/dts/overlays/Makefile
 @@ -0,0 +1,8 @@
 +# SPDX-License-Identifier: GPL-2.0
 +dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
@@ -36,11 +36,11 @@ index 000000000..cc9197d76
 +
 +always			:= $(dtbo-y)
 +clean-files		:= *.dtbo
-diff --git a/arch/arm64/boot/dts/rockchip/overlay/rk3399-pcie-gen2.dtso b/arch/arm64/boot/dts/rockchip/overlay/rk3399-pcie-gen2.dtso
+diff --git a/arch/arm64/boot/dts/overlays/rk3399-pcie-gen2.dtso b/arch/arm64/boot/dts/overlays/rk3399-pcie-gen2.dtso
 new file mode 100644
 index 000000000..86c7e9e83
 --- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/overlay/rk3399-pcie-gen2.dtso
++++ b/arch/arm64/boot/dts/overlays/rk3399-pcie-gen2.dtso
 @@ -0,0 +1,16 @@
 +// Enable pcie gen2 mode
 +/dts-v1/;

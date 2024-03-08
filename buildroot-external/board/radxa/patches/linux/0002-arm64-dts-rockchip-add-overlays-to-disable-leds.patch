@@ -4,21 +4,21 @@ Date: Mon, 22 May 2023 19:58:59 +0000
 Subject: [PATCH] arm64: dts: rockchip: add overlays to disable leds
 
 ---
- arch/arm64/boot/dts/rockchip/overlay/Makefile      |  5 ++++-
+ arch/arm64/boot/dts/overlays/Makefile      |  5 ++++-
  .../rk3399-rock-4c-plus-disable-hearbeat.dtso      | 14 ++++++++++++++
  .../rk3399-rock-4c-plus-disable-power-led.dtso     | 14 ++++++++++++++
- .../overlay/rk3399-rock-pi-4-disable-heartbeat.dtso| 14 ++++++++++++++
+ .../overlays/rk3399-rock-pi-4-disable-heartbeat.dtso| 14 ++++++++++++++
  .../boot/dts/rockchip/rk3399-rock-4c-plus.dts      |  4 ++--
  arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi |  2 +-
  6 files changed, 49 insertions(+), 4 deletions(-)
- create mode 100644 arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-4c-plus-disable-hearbeat.dtso
- create mode 100644 arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-4c-plus-disable-power-led.dtso
- create mode 100644 arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-pi-4-disable-heartbeat.dtso
+ create mode 100644 arch/arm64/boot/dts/overlays/rk3399-rock-4c-plus-disable-hearbeat.dtso
+ create mode 100644 arch/arm64/boot/dts/overlays/rk3399-rock-4c-plus-disable-power-led.dtso
+ create mode 100644 arch/arm64/boot/dts/overlays/rk3399-rock-pi-4-disable-heartbeat.dtso
 
-diff --git a/arch/arm64/boot/dts/rockchip/overlay/Makefile b/arch/arm64/boot/dts/rockchip/overlay/Makefile
+diff --git a/arch/arm64/boot/dts/overlays/Makefile b/arch/arm64/boot/dts/overlays/Makefile
 index 8d867d175c67..709ff60dcb06 100644
---- a/arch/arm64/boot/dts/rockchip/overlay/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/overlay/Makefile
+--- a/arch/arm64/boot/dts/overlays/Makefile
++++ b/arch/arm64/boot/dts/overlays/Makefile
 @@ -1,6 +1,9 @@
  # SPDX-License-Identifier: GPL-2.0
  dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
@@ -30,11 +30,11 @@ index 8d867d175c67..709ff60dcb06 100644
  
  targets += $(dtbo-y)
  
-diff --git a/arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-4c-plus-disable-hearbeat.dtso b/arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-4c-plus-disable-hearbeat.dtso
+diff --git a/arch/arm64/boot/dts/overlays/rk3399-rock-4c-plus-disable-hearbeat.dtso b/arch/arm64/boot/dts/overlays/rk3399-rock-4c-plus-disable-hearbeat.dtso
 new file mode 100644
 index 000000000000..4edefbf79d5e
 --- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-4c-plus-disable-hearbeat.dtso
++++ b/arch/arm64/boot/dts/overlays/rk3399-rock-4c-plus-disable-hearbeat.dtso
 @@ -0,0 +1,14 @@
 +// Disable heartbeat led (for rk3399-rock-4c-plus.dts)
 +/dts-v1/;
@@ -50,11 +50,11 @@ index 000000000000..4edefbf79d5e
 +		};
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-4c-plus-disable-power-led.dtso b/arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-4c-plus-disable-power-led.dtso
+diff --git a/arch/arm64/boot/dts/overlays/rk3399-rock-4c-plus-disable-power-led.dtso b/arch/arm64/boot/dts/overlays/rk3399-rock-4c-plus-disable-power-led.dtso
 new file mode 100644
 index 000000000000..4c39c736c67b
 --- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-4c-plus-disable-power-led.dtso
++++ b/arch/arm64/boot/dts/overlays/rk3399-rock-4c-plus-disable-power-led.dtso
 @@ -0,0 +1,14 @@
 +// Disable power led (for rk3399-rock-4c-plus.dts)
 +/dts-v1/;
@@ -70,11 +70,11 @@ index 000000000000..4c39c736c67b
 +		};
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-pi-4-disable-heartbeat.dtso b/arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-pi-4-disable-heartbeat.dtso
+diff --git a/arch/arm64/boot/dts/overlays/rk3399-rock-pi-4-disable-heartbeat.dtso b/arch/arm64/boot/dts/overlays/rk3399-rock-pi-4-disable-heartbeat.dtso
 new file mode 100644
 index 000000000000..e54ce3f3d840
 --- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/overlay/rk3399-rock-pi-4-disable-heartbeat.dtso
++++ b/arch/arm64/boot/dts/overlays/rk3399-rock-pi-4-disable-heartbeat.dtso
 @@ -0,0 +1,14 @@
 +// Disable heartbeat led (for rk3399-rock-pi-4.dtsi)
 +/dts-v1/;

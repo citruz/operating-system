@@ -10,10 +10,7 @@ function hassos_pre_image() {
         "${BINARIES_DIR}/rockchip/"*.dtb
 
     mkdir -p "${BOOT_DATA}/overlays"
-    # replace .dtb extension with .dtbo
-    for file in "${BINARIES_DIR}/rockchip/overlay/"*.dtb; do
-        cp "$file" "${BOOT_DATA}/overlays/$(basename -- "$file" .dtb).dtbo"
-    done
+    cp "${BINARIES_DIR}/overlays/"*.dtbo "${BOOT_DATA}/overlays/"
 
     cp "${BOARD_DIR}/../boot-env-common.txt" "${BOOT_DATA}/haos-config.txt"
     cat "${BOARD_DIR}/boot-env.txt" >> "${BOOT_DATA}/haos-config.txt"
