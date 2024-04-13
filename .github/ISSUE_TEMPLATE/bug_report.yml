@@ -24,25 +24,13 @@ body:
     attributes:
       label: What operating system image do you use?
       options:
-        - generic-x86-64 (Generic UEFI capable x86-64 systems)
-        - generic-aarch64 (Generic UEFI capable aarch64 systems)
-        - khadas-vim3 (Khadas VIM3)
-        - odroid-c2 (Hardkernel ODROID-C2)
-        - odroid-c4 (Hardkernel ODROID-C4)
-        - odroid-m1 (Hardkernel ODROID-M1)
-        - odroid-m1s (Hardkernel ODROID-M1S)
-        - odroid-n2 (Hardkernel ODROID-N2/N2+)
-        - odroid-xu4 (Hardkernel ODROID-XU4)
-        - ova (for Virtual Machines)
-        - rpi2 (Raspberry Pi 2)
-        - rpi3 (Raspberry Pi 3 32-bit OS)
-        - rpi3-64 (Raspberry Pi 3 64-bit OS)
-        - rpi4  (Raspberry Pi 4/400 32-bit OS)
-        - rpi4-64  (Raspberry Pi 4/400 64-bit OS)
-        - rpi5-64  (Raspberry Pi 5 64-bit OS)
-        - tinker (ASUS Tinker Board/Tinker Board S)
-        - yellow (Home Assistant Yellow)
-        - green (Home Assistant Green)
+        - rock-4c-plus
+        - rock-4se
+        - rockpi-4a
+        - rockpi-4a-plus
+        - rockpi-4b
+        - rockpi-4b-plus
+        - rockpi-4c
       description: >
         Can be found in [Settings -> System -> Repairs -> System Information](https://my.home-assistant.io/redirect/system_health/). It is listed as the `Board` value.
 
