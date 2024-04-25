@@ -76,11 +76,55 @@ With this setup you always need to have an SD card inserted from which the board
 1. Insert SD card into board and boot
 1. There might be some error messages like `find_valid_gpt: *** ERROR: Invalid GPT ***`. These are expected because U-Boot will attempt to find the boot partition on SD card first (it's not there). It should then recognize the NVMe SSD and boot from it.
 
-## Automatic updates
+## Upgrading
 
-Since this is an unofficial fork of Homeassistant OS, the OS image cannot be updated over the air (supervisor, core and all other components can be updated just fine). You will need to reflash for each release.
+Since this is an unofficial fork of Homeassistant OS, the OS image cannot be updated from the UI (supervisor, core and all other components can be updated just fine). Instead, the update process is triggered via SSH from the command line.
 
-However, HA's built-in backup and restore functionality works great so there should be no dataloss. Make sure to create a "Full Backup" and download it before flashing a new image.
+**Always create a full backup before upgrading to avoid data loss.**
+
+Use the [HassOS SSH port Configurator](https://community.home-assistant.io/t/add-on-hassos-ssh-port-22222-configurator/264109) to enable ssh root access on port 22222 (the "Terminal & SSH" Add-on will not work as it only exposes a limited shell in a container).
+
+Connect to the device and run the following command. Replace the URL with the appropriate link from the Releases page for your device. Make sure to copy the `.raucb` URL, not the `.img.xz`.
+
+```
+rauc install https://github.com/citruz/haos-rockpi/releases/download/<release>/haos_<device>-<release>.raucb
+```
+
+The file will be downloaded to a temporary location in `/mnt/data/tmp/` so make sure that there is enough space on the data partition left.
+
+```
+# rauc install https://github.com/citruz/haos-rockpi/releases/download/ota-test/haos_rockpi-4b-plus-12.2.dev20240502.raucb
+installing
+  0% Installing
+  0% Determining slot states
+ 10% Determining slot states done.
+ 10% Checking bundle
+ 10% Verifying signature
+ 20% Verifying signature done.
+ 20% Checking bundle done.
+ 20% Checking manifest contents
+ 30% Checking manifest contents done.
+ 30% Determining target install group
+ 40% Determining target install group done.
+ 40% Updating slots
+ 40% Checking slot boot.0
+ 41% Checking slot boot.0 done.
+ 41% Copying image to boot.0
+ ...
+ 99% Copying image to spl.0 done.
+ 99% Updating slots done.
+100% Installing done.
+Installing `https://github.com/citruz/haos-rockpi/releases/download/ota-test/haos_rockpi-4b-plus-12.2.dev20240502.raucb` succeeded
+```
+
+Now reboot the device to switch to the new OS version.
+
+This process also updates the bootloader. If it detects that the system is booted from an SSD it will update the bootloader on the eMMC or SD card.
+
+If there is an error during installation, run `journalctl -u rauc.service` to get an extended output log.
+
+**Note:** The OTA update functionality was added in 12.3. To upgrade from an earlier version to 12.3 or later a few extra steps are required. Please refer to the the 12.3 release notes for detailed instructions.
+
 
 ## Hardware support
 

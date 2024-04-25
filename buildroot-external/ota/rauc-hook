@@ -69,6 +69,25 @@ install_spl() {
         dd if="${RAUC_IMAGE_NAME}" of="${DEVICE_ROOT}boot0" conv=notrunc ${FLAGS} bs=512 skip=1 count=2047
         echo 1 > /sys/block/"$(basename "${DEVICE_ROOT}boot0")"/force_ro
     fi
+
+    # Rock Pi: Check if we are booting from SSD and flash bootloader to eMMC/SD
+    if case "${DEVICE_ROOT}" in "/dev/nvme"*) true;; *) false;; esac; then
+        # make sure there are no partitions for the device we're writing to.
+        # if there are any, this is not the expected configuration so rather
+        # error out than overwrite something unrelated.
+        if [ -b "/dev/mmcblk0" ] && ! [ -b "/dev/mmcblk0p1" ]; then
+            echo "Updating bootloader in eMMC/SD mmcblk0"
+            dd if="${RAUC_IMAGE_NAME}" of="/dev/mmcblk0" conv=notrunc ${FLAGS} bs=512 seek=64 skip=64
+        elif [ -b "/dev/mmcblk1" ] && ! [ -b "/dev/mmcblk1p1" ]; then
+            echo "Updating bootloader in eMMC/SD mmcblk1"
+            dd if="${RAUC_IMAGE_NAME}" of="/dev/mmcblk1" conv=notrunc ${FLAGS} bs=512 seek=64 skip=64
+        else
+            echo "Boot from SSD detected but got unexpected device configuration."
+            echo "Please open an issue on Github with the following output:"
+            lsblk
+            exit 1
+        fi
+    fi
 }
 
 check_grubenv() {

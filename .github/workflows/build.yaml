@@ -202,6 +202,21 @@ jobs:
         run: |
           sed -i -E "s/(^VERSION_SUFFIX=\").*(\"$)/\1${VERSION_DEV}\2/" buildroot-external/meta
 
+      - name: 'Add release PKI certs'
+        if: ${{ needs.prepare.outputs.self_signed_cert != 'true' }}
+        env:
+          RAUC_CERTIFICATE: ${{ secrets.RAUC_CERTIFICATE }}
+          RAUC_PRIVATE_KEY: ${{ secrets.RAUC_PRIVATE_KEY }}
+        run: |
+          echo -e "-----BEGIN CERTIFICATE-----\n${RAUC_CERTIFICATE}\n-----END CERTIFICATE-----" > cert.pem
+          echo -e "-----BEGIN PRIVATE KEY-----\n${RAUC_PRIVATE_KEY}\n-----END PRIVATE KEY-----" > key.pem
+
+      - name: Get self-signed certificate from the prepare job
+        if: ${{ needs.prepare.outputs.self_signed_cert == 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: signing-key
+
       - name: Build
         run: |
           BUILDER_UID="$(id -u)"
@@ -224,8 +239,26 @@ jobs:
             BR2_CHECK_DOTCONFIG_OPTS="--github-format --strip-path-prefix=/build/" linux-check-dotconfig
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: haos-image
-          path: output/images/haos_*.img.xz
+          name: haos-image-${{ matrix.board.id }}
+          path: |
+            output/images/haos_*.img.xz
+            output/images/haos_*.raucb
           if-no-files-found: error
+
+      - name: Generate build summary
+        run: |
+          echo "# ${{ matrix.board.id }} build summary" >> $GITHUB_STEP_SUMMARY
+          echo "## Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size (bytes) | Size (formatted) |" >> $GITHUB_STEP_SUMMARY
+          echo "|:-|:-|:-|" >> $GITHUB_STEP_SUMMARY
+          for f in output/images/haos_*; do
+            echo "| $(basename $f) | $(du -b $f | cut -f1) | $(du -bh $f | cut -f1) |" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "## Partitions" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size (bytes) | Size (formatted) |" >> $GITHUB_STEP_SUMMARY
+          echo "|:-|:-|:-|" >> $GITHUB_STEP_SUMMARY
+          for f in boot.vfat kernel.img rootfs.erofs overlay.ext4 data.ext4; do
+            echo "| ${f} | $(du -b output/images/$f | cut -f1) | $(du -bh output/images/$f | cut -f1) |" >> $GITHUB_STEP_SUMMARY
+          done
