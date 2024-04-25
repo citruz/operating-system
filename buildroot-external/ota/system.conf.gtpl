@@ -2,6 +2,7 @@
 compatible={{ env "ota_compatible" }}
 mountprefix=/run/rauc
 statusfile=/mnt/data/rauc.db
+max-bundle-download-size=314572800
 {{- if eq (env "BOOTLOADER") "tryboot" }}
 bootloader=custom
 {{- else }}
