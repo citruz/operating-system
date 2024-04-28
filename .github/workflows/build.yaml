@@ -201,6 +201,12 @@ jobs:
           VERSION_DEV: ${{ needs.prepare.outputs.version_dev }}
         run: |
           sed -i -E "s/(^VERSION_SUFFIX=\").*(\"$)/\1${VERSION_DEV}\2/" buildroot-external/meta
+      
+      - name: Get self-signed certificate from the prepare job
+        if: ${{ needs.prepare.outputs.self_signed_cert == 'true' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: signing-key
 
       - name: Build
         run: |
@@ -224,8 +230,8 @@ jobs:
             BR2_CHECK_DOTCONFIG_OPTS="--github-format --strip-path-prefix=/build/" linux-check-dotconfig
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: haos-image
-          path: output/images/haos_*.img.xz
+          path: output/images/haos_*
           if-no-files-found: error
