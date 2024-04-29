@@ -32,12 +32,7 @@ function write_rauc_config() {
 function install_rauc_certs() {
     local cert="/build/cert.pem"
 
-    if [ "${DEPLOYMENT}" == "development" ]; then
-        # Contains development and release certificate
-        cp "${BR2_EXTERNAL_HASSOS_PATH}/ota/dev-ca.pem" "${TARGET_DIR}/etc/rauc/keyring.pem"
-    else
-        cp "${BR2_EXTERNAL_HASSOS_PATH}/ota/rel-ca.pem" "${TARGET_DIR}/etc/rauc/keyring.pem"
-    fi
+    cp "${BR2_EXTERNAL_HASSOS_PATH}/ota/rockpi-ca.pem" "${TARGET_DIR}/etc/rauc/keyring.pem"
 
     # Add local self-signed certificate (if not trusted by the dev or release
     # certificate it is a self-signed certificate, dev-ca.pem contains both)
